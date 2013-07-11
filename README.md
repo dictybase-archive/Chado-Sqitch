@@ -3,14 +3,6 @@ This repository contains versioned changes to Chado schema and an extension to [
 
 [![Build Status](https://secure.travis-ci.org/dictyBase/Chado-Sqitch.png)](https://travis-ci.org/dictyBase/Chado-Sqitch) 
 
-## Background
-1. Chado schema
-   * Schema is stable. 
-   * Does not have default versioning system
-2. We will have to make changes to default schema. It should be possible for us to make changes upstream
-   * e.g - If we make changes on default schema today, and the schema changes tomorrow; we should be able to keep track of all changes
-3. __We are NOT doing data versioning, ONLY schema versioning__
-
 ## Getting started
 * [Setup `Perl` environment using `perlbrew`](http://dictybase.github.io/perl-setup/index.html) or [`plenv`](https://github.com/tokuhirom/plenv#synopsis)
 
@@ -43,7 +35,7 @@ cd Chado-Sqitch
 
 To deploy/revert changes make sure that you are in your Chado-Sqitch directory and it contains `sqitch.conf`, `sqitch.plan` and the folders `deploy/*`, `revert/*` and `verify/*`
 
-Currently, the repository hold 2 versions of Chado; 1.1 & 1.23(1.2). Chado 1.23 is an update from Chado 1.1. So Chado 1.1 is a dependency for Chado 1.23 
+Currently, the repository hold 2 versions of Chado. 
 
 * To deploy all the changes; i.e. to have Chado 1.23 installed on your `PostgreSQL` database
 
@@ -51,7 +43,7 @@ Currently, the repository hold 2 versions of Chado; 1.1 & 1.23(1.2). Chado 1.23 
 sqitch deploy
 ```
 
-These are just a couple of changes and can be reverted
+* To revert all the changes,
 
 ```shell
 sqitch revert
