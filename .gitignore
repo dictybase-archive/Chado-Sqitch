@@ -2,3 +2,4 @@ bin/sqitch
 share/
 tmp/
 data/
+!t/sql/data/
