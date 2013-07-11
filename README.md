@@ -1,7 +1,7 @@
 # Versioned Chado & extended Sqitch commands @dictyBase
 This repository contains versioned changes to Chado schema and an extension to [App::Sqitch](https://metacpan.org/module/App::Sqitch) commands for dumping & loading data for a particular change 
 
-[![Build Status](https://secure.travis-ci.org/dictyBase/App-Sqitch-data.png?branch=develop)](https://travis-ci.org/dictyBase/App-Sqitch-data) [![Coverage Status](https://coveralls.io/repos/dictyBase/App-Sqitch-data/badge.png)](https://coveralls.io/r/dictyBase/App-Sqitch-data)
+[![Build Status](https://secure.travis-ci.org/dictyBase/Chado-Sqitch.png)](https://travis-ci.org/dictyBase/Chado-Sqitch) 
 
 ## Background
 1. Chado schema
