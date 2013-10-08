@@ -8,21 +8,20 @@ use Carp;
 use File::Slurp;
 use File::Temp;
 use Graph::Directed;
+use IPC::Cmd qw/can_run run/;
 use Moose;
 use namespace::autoclean;
 use Path::Class::Dir;
-use SVN::Client;
 use Text::Trim;
-use URI::URL;
 use XML::Twig;
 with 'MooseX::Getopt';
 
 has output => (
     is            => 'rw',
     isa           => 'Str',
-    default       => 'dicty.sql',
+    default       => 'chado_stripped.sql',
     required      => 1,
-    documentation => 'Output file. Default dicty.sql'
+    documentation => 'Output file. Default chado_stripped.sql'
 );
 
 has chado_svn => (
@@ -30,12 +29,21 @@ has chado_svn => (
     isa     => 'Str',
     default => sub {
         my ($self) = @_;
-        my $path   = File::Temp->newdir;
-        my $svn    = SVN::Client->new
-            or croak 'Something went wrong with initializing SVN checkout';
-        say "Checking out SVN repo at " . $path;
-        $svn->checkout( $self->_chado_svn_repo_url, $path, 'HEAD', 1 );
-        return $path;
+        my $path = File::Spec->tmpdir() . "/chado_svn";
+        if ( can_run('svn') ) {
+            say "Checking out SVN repo at " . $path;
+            my $url = 'https://svn.code.sf.net/p/gmod/svn/schema/trunk/chado';
+            my $cmd = sprintf "%s %s %s %s", 'svn', 'co', $url, $path;
+            my ( $success, $error_code, $full_buf, $stdout_buf, $stderr_buf )
+                = run( command => $cmd, verbose => 0 );
+            if ( !$success ) {
+                croak "Unable to run command: " . $stderr_buf;
+            }
+            return $path;
+        }
+        else {
+            croak "svn client is not installed";
+        }
     },
     required => 1,
     lazy     => 1,
@@ -43,19 +51,7 @@ has chado_svn => (
         'Path to Chado SVN checkout folder. Default temp directory'
 );
 
-has _chado_svn_repo_url => (
-    is      => 'rw',
-    isa     => 'URI::URL',
-    default => sub {
-        return URI::URL->new(
-            'https://gmod.svn.sourceforge.net/svnroot/gmod/schema/trunk/chado'
-        );
-    },
-    lazy          => 1,
-    documentation => 'Chado SVN repository URL'
-);
-
-sub run {
+sub execute {
     my ($self) = @_;
 
     my $output_handler = IO::File->new( $self->output, 'w' );
@@ -137,6 +133,6 @@ sub parse_metadata {
 1;
 
 package main;
-Chado::NoFuncs->new_with_options->run();
+Chado::NoFuncs->new_with_options->execute();
 
 1;
