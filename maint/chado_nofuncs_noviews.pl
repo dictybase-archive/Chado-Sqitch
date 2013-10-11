@@ -24,6 +24,22 @@ has output => (
     documentation => 'Output file. Default chado_stripped.sql'
 );
 
+has views => (
+    is       => 'rw',
+    isa      => 'Bool',
+    default  => 0,
+    required => 1,
+    lazy     => 1
+);
+
+has functions => (
+    is       => 'rw',
+    isa      => 'Bool',
+    default  => 0,
+    required => 1,
+    lazy     => 1
+);
+
 has chado_svn => (
     is      => 'rw',
     isa     => 'Str',
@@ -79,12 +95,13 @@ sub execute {
     say "Modules directory - $module_base_dir";
 
     for my $module_id (@module_load_order) {
-        my $module_desc_sql = $module_data->{modules_hash}->{$module_id};
-        my $module_sql_file
-            = $module_base_dir->file( $module_desc_sql->{sql_path} );
-
-        my $text = read_file($module_sql_file);
-        $output_handler->print( sprintf "%s\n", $text );
+        my $module_desc_sql  = $module_data->{modules_hash}->{$module_id};
+        my $module_sql_files = $module_desc_sql->{sql_path};
+        for my $module_sql_path ( @{$module_sql_files} ) {
+            my $module_sql_file = $module_base_dir->file($module_sql_path);
+            my $text            = read_file($module_sql_file);
+            $output_handler->print( sprintf "%s\n", $text );
+        }
     }
 
     say "Output written to " . $self->output;
@@ -106,13 +123,47 @@ sub parse_metadata {
 
     my $modules_hash;
     for my $module ( $xml->descendants('module') ) {
-        my $module_id   = $module->att('id') or croak 'module with no id';
+        my $module_id = $module->att('id') or croak 'module with no id';
         my $module_desc = trim( $module->first_child('description')->text );
-        my ($sql_path)  = $module->descendants(q"source[@type='sql']");
+
+        my @sql_paths;
+        my ($sql_path) = $module->descendants(q"source[@type='sql']");
         $sql_path &&= $sql_path->att('path')
             or warn "$module_id does not have path to $module_id.sql";
+        push @sql_paths, $sql_path;
+
+        if ( $self->views ) {
+            for my $view_component (
+                $module->descendants(q"component[@type='views']") )
+            {
+                my $component_id = $view_component->att('id');
+                my ($view_sql_path)
+                    = $view_component->descendants(q"source[@type='sql']");
+                $view_sql_path &&= $view_sql_path->att('path')
+                    or warn
+                    "$component_id does not have path to $module_id.sql";
+                push @sql_paths, $view_sql_path;
+            }
+        }
+
+        if ( $self->functions ) {
+            for my $func_component (
+                $module->descendants(q"component[@type=~/(dbapi|code)/]") )
+            {
+                my $component_id = $func_component->att('id');
+                my ($func_sql_path)
+                    = $func_component->descendants(
+                    q"source[@type=~/(sqlapi|plpgsql|sqli)/]");
+                $func_sql_path &&= $func_sql_path->att('path')
+                    or warn
+                    "$component_id does not have path to *.sql";
+                # say $func_component->att('type') . "\t" . $func_sql_path;
+                push @sql_paths, $func_sql_path;
+            }
+        }
+
         $modules_hash->{$module_id}
-            = { desc => $module_desc, sql_path => $sql_path };
+            = { desc => $module_desc, sql_path => \@sql_paths };
 
         $graph->add_vertex($module_id);
         for my $dep_id ( map { $_->att('to') or die "no 'to' in dependency" }
