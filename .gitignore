@@ -3,3 +3,4 @@ share/
 tmp/
 data/
 !t/sql/data/
+sqitch.conf
