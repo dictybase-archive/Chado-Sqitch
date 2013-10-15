@@ -4,6 +4,7 @@ package Chado::NoFuncs;
 use strict;
 use feature 'say';
 
+use App::Sqitch;
 use Carp;
 use File::Slurp;
 use File::Temp;
@@ -25,20 +26,31 @@ has output => (
 );
 
 has views => (
-    is       => 'rw',
-    isa      => 'Bool',
-    default  => 0,
-    required => 1,
-    lazy     => 1
+    is            => 'rw',
+    isa           => 'Bool',
+    default       => 0,
+    lazy          => 1,
+    documentation => 'Option to export SQL for views. Default 0'
 );
 
 has functions => (
-    is       => 'rw',
-    isa      => 'Bool',
-    default  => 0,
-    required => 1,
-    lazy     => 1
+    is            => 'rw',
+    isa           => 'Bool',
+    default       => 0,
+    lazy          => 1,
+    documentation => 'Option to export SQL for functions. Default 0'
 );
+
+has change => (
+    is            => 'rw',
+    isa           => 'Str',
+    default       => 'chado',
+    documentation => ''
+);
+
+=item chado_svn
+
+=cut 
 
 has chado_svn => (
     is      => 'rw',
@@ -67,11 +79,26 @@ has chado_svn => (
         'Path to Chado SVN checkout folder. Default temp directory'
 );
 
+=item
+
+=cut 
+
 sub execute {
     my ($self) = @_;
 
-    my $output_handler = IO::File->new( $self->output, 'w' );
+    my $sqitch = App::Sqitch->new;    # Sqitch object with default config
+    my $cmd_args;
+    $cmd_args->[0] = $self->change;
+    $cmd_args->[1] = "-n \'Initial Chado SQL\'";
 
+    my $command = App::Sqitch::Command->load(
+        {   sqitch  => $sqitch,
+            command => 'add',
+            config  => $sqitch->config,
+            args    => $cmd_args
+        }
+    );
+    $command->execute( @{$cmd_args} );
     my $metadata_file
         = Path::Class::Dir->new( $self->chado_svn )
         ->file('chado-module-metadata.xml')
@@ -79,6 +106,22 @@ sub execute {
     say "Reading Chado metadata from $metadata_file";
 
     my $module_data = $self->parse_metadata($metadata_file);
+    $self->write_sql( $sqitch, $module_data );
+
+    return;
+
+}
+
+sub write_sql {
+    my ( $self, $sqitch, $module_data ) = @_;
+
+    my $deploy_file = Path::Class::Dir->new( $sqitch->deploy_dir )
+        ->file( $self->change . ".sql" );
+    my $revert_file = Path::Class::Dir->new( $sqitch->revert_dir )
+        ->file( $self->change . ".sql" );
+    say $deploy_file;
+
+    my $output_handler = IO::File->new( $deploy_file, 'w' );
 
     say "Sorting modules as per load order";
     my @module_load_order;
@@ -94,6 +137,7 @@ sub execute {
         ->subdir( $module_data->{modules_dir} );
     say "Modules directory - $module_base_dir";
 
+    $output_handler->print("-- Deploy $self->change\n\nBEGIN;\n\n");
     for my $module_id (@module_load_order) {
         my $module_desc_sql  = $module_data->{modules_hash}->{$module_id};
         my $module_sql_files = $module_desc_sql->{sql_path};
@@ -103,35 +147,41 @@ sub execute {
             $output_handler->print( sprintf "%s\n", $text );
         }
     }
+    $output_handler->print("\nCOMMIT;");
 
-    say "Output written to " . $self->output;
+    say "Output written to " . $deploy_file;
     $output_handler->close();
-
     return;
 }
+
+=item parse_metadata
+
+=cut
 
 sub parse_metadata {
     my ( $self, $meta_file ) = @_;
 
     my $xml = XML::Twig->new();
-    $xml->parsefile($meta_file);
+    $xml->parsefile($meta_file);    # Parsing metadata to iterate over modules
 
     my ($modules_dir) = $xml->descendants(q"source[@type='dir']");
     $modules_dir &&= $modules_dir->att('path');
 
-    my $graph = Graph::Directed->new();
+    my $graph = Graph::Directed->new();  # Graph to handle module dependencies
 
     my $modules_hash;
     for my $module ( $xml->descendants('module') ) {
-        my $module_id = $module->att('id') or croak 'module with no id';
+        my $module_id = $module->att('id')
+            or croak 'module with no id';    # Name of module
         my $module_desc = trim( $module->first_child('description')->text );
 
-        my @sql_paths;
+        my @sql_paths;    # An array to store relative paths to SQL files
         my ($sql_path) = $module->descendants(q"source[@type='sql']");
         $sql_path &&= $sql_path->att('path')
             or warn "$module_id does not have path to $module_id.sql";
         push @sql_paths, $sql_path;
 
+        # Views are component of modules
         if ( $self->views ) {
             for my $view_component (
                 $module->descendants(q"component[@type='views']") )
@@ -146,6 +196,7 @@ sub parse_metadata {
             }
         }
 
+        # Functions are component of modules
         if ( $self->functions ) {
             for my $func_component (
                 $module->descendants(q"component[@type=~/(dbapi|code)/]") )
@@ -155,9 +206,7 @@ sub parse_metadata {
                     = $func_component->descendants(
                     q"source[@type=~/(sqlapi|plpgsql|sqli)/]");
                 $func_sql_path &&= $func_sql_path->att('path')
-                    or warn
-                    "$component_id does not have path to *.sql";
-                # say $func_component->att('type') . "\t" . $func_sql_path;
+                    or warn "$component_id does not have path to *.sql";
                 push @sql_paths, $func_sql_path;
             }
         }
