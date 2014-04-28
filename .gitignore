@@ -9,3 +9,11 @@ local/
 .ssh/
 .zsh_history
 .gitconfig
+.cache/
+.cpan/
+.neocomplcache/
+.lesshst
+.perltidyrc
+.vim-cpan-module-cache
+.viminfo
+data/
