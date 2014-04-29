@@ -1,5 +1,6 @@
 package Chado::Dependencies;
 
+use Data::Dumper;
 use Moose;
 use XML::LibXML;
 use Archive::Extract;
@@ -30,9 +31,10 @@ has location => (
 sub execute {
     my ($self) = @_;
     my $tmp_dir = File::Temp->newdir();
-    if ( $ARGV[0] ) {    # given a tarball through command line
+    my $tarball = $self->extra_argv;
+    if ( @$tarball ) {    # given a tarball through command line
         my $archive = Archive::Extract->new(
-            archive => $ARGV[0],
+            archive => $tarball->[0],
             type    => 'tgz'
         );
         $archive->extract( to => $tmp_dir ) or die $archive->error;
