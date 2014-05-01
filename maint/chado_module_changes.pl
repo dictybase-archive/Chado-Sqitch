@@ -1,0 +1,229 @@
+package Chado::SqitchChange;
+
+use Moose;
+use Cwd;
+use XML::Twig;
+use App::Sqitch;
+use App::Sqitch::Command;
+use Archive::Extract;
+use XML::LibXML;
+use File::Temp;
+use File::Spec::Functions;
+use File::Path qw/make_path/;
+use feature qw/say/;
+use SQL::Translator;
+with 'MooseX::Getopt';
+
+has sqitch_dir => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => sub { return getcwd() },
+    documentation =>
+        'Output folder where all changes will be written, default is current folder'
+);
+
+has location => (
+    is  => 'rw',
+    isa => 'Str',
+    default =>
+        'http://downloads.sourceforge.net/project/gmod/gmod/chado-1.11/chado-1.11.tar.gz',
+    documentation =>
+        'Location of chado download url, default is http://downloads.sourceforge.net/project/gmod/gmod/chado-1.11/chado-1.11.tar.gz',
+);
+
+sub execute {
+    my ($self)  = @_;
+    my $tmp_dir = File::Temp->newdir();
+    my $tarball = $self->extra_argv;
+    if (@$tarball) {    # given a tarball through command line
+        my $archive = Archive::Extract->new(
+            archive => $tarball->[0],
+            type    => 'tgz'
+        );
+        $archive->extract( to => $tmp_dir ) or die $archive->error;
+    }
+    else {
+        my $tmp_file = File::Temp->new;
+        $tmp_file->print(
+            $self->chado_content_from_remote( $self->location ) );
+        my $archive = Archive::Extract->new(
+            archive => $ARGV[0],
+            type    => 'tgz'
+        );
+        $archive->extract( to => $tmp_dir ) or die $archive->error;
+    }
+
+    my @children = grep { $_->is_dir }
+        Path::Class::Dir->new( $tmp_dir->dirname )->children;
+    my $dom = XML::LibXML->load_xml( location =>
+            $children[0]->file("chado-module-metadata.xml")->stringify );
+
+    my $chado_folder = Path::Class::Dir->new( $children[0] );
+    my $top_dir      = Path::Class::Dir->new( $self->sqitch_dir );
+    $self->write_sqitch_plan($top_dir);
+    my $sqitch = App::Sqitch->new( { top_dir => $top_dir, verbosity => 1 } );
+    my $template_dir = $self->create_template_dir;
+    $self->create_templates($template_dir);
+    say $template_dir;
+
+    for my $node ( $dom->findnodes("//module") ) {
+        my $id = $node->getAttribute("id");
+        if ( $id eq "general" ) {
+            my $sqitch_content
+                = $self->get_sqitch_content( $chado_folder, $node );
+            my $args = [
+                $id,
+                "-n sql for $id chado module",
+                "--template-directory",
+                $template_dir,
+                "--set",
+                "deploy_content=$sqitch_content->[0]",
+                "--set",
+                "revert_content=$sqitch_content->[1]"
+            ];
+            my $command = App::Sqitch::Command->load(
+                {   sqitch  => $sqitch,
+                    command => 'add',
+                    config  => $sqitch->config,
+                    args    => $args
+                }
+            );
+            $command->execute(@$args);
+        }
+        if ( $node->exists("dependency") ) {
+            my @deps = map { $_->getAttribute("to") }
+                $node->findnodes("dependency");
+            my $sqitch_content
+                = $self->get_sqitch_content( $chado_folder, $node );
+            my $args = [
+                $id,
+                "-n sql for $id chado module",
+                "--template-directory",
+                $template_dir,
+                "--set",
+                "deploy_content=$sqitch_content->[0]",
+                "--set",
+                "revert_content=$sqitch_content->[1]"
+            ];
+            push @$args, "-r", $_ for @deps;
+            my $command = App::Sqitch::Command->load(
+                {   sqitch  => $sqitch,
+                    command => 'add',
+                    config  => $sqitch->config,
+                    args    => $args
+                }
+            );
+            $command->execute(@$args);
+        }
+    }
+}
+
+sub create_template_dir {
+    my ($self) = @_;
+    my $temp_dir = File::Temp->newdir->dirname;
+    make_path( catfile( $temp_dir, $_ ) ) for qw/deploy revert verify/;
+    return $temp_dir;
+}
+
+sub create_templates {
+    my ( $self, $template_dir ) = @_;
+    my $deploy_content = <<"DEPLOY";
+-- Deploy chado module [% change %]
+
+[% FOREACH r IN requires -%]
+    -- requires [% r %]
+[% END %]
+
+BEGIN;
+
+[% IF deploy_content %]
+    [% deploy_content %]
+[% END %]
+
+COMMIT;
+DEPLOY
+
+    my $file = Path::Class::Dir->new($template_dir)->subdir("deploy")
+        ->file("pg.tmpl")->openw;
+    $file->print($deploy_content);
+    $file->close;
+
+    my $revert_content = <<"REVERT";
+-- Revert chado module [% change %]
+
+BEGIN;
+
+[% IF revert_content %]
+    [% revert_content %]
+[% END %]
+
+COMMIT;
+REVERT
+
+    $file = Path::Class::Dir->new($template_dir)->subdir("revert")
+        ->file("pg.tmpl")->openw;
+    $file->print($revert_content);
+    $file->close;
+
+    my $verify_content = <<"VERIFY";
+-- Verify chado module [% change %]
+
+BEGIN;
+
+[% IF verify_content %]
+    [% verify_content %]
+[% END %]
+
+COMMIT;
+VERIFY
+
+    $file = Path::Class::Dir->new($template_dir)->subdir("verify")
+        ->file("pg.tmpl")->openw;
+    $file->print($verify_content);
+    $file->close;
+
+}
+
+sub write_sqitch_plan {
+    my ( $self, $top_dir ) = @_;
+    if ( !-e $top_dir->file("sqitch.plan") ) {
+        my $content = <<"CONTENT";
+%syntax-version=1.0.0-b2
+%project=dictybase
+%uri=https://github.com/dictyBase/Chado-Sqitch
+CONTENT
+        my $plan_file = $top_dir->file("sqitch.plan")->openw;
+        $plan_file->print($content);
+        $plan_file->close;
+    }
+}
+
+sub get_sqitch_content {
+    my ( $self, $chado_folder, $node ) = @_;
+    my ($sql_node) = $node->findnodes('source[@type="sql"]');
+    my $path       = $sql_node->getAttribute("path");
+    my $content    = $chado_folder->subdir("modules")->file($path)->slurp;
+
+    my $tr = SQL::Translator->new( from => "PostgreSQL" );
+    $tr->producer( sub { $self->produce_revert_content(@_) } )
+        or die $tr->error;
+    my $revert_content = $tr->translate( \$content ) or die $tr->error;
+    return [ $content, $revert_content ];
+}
+
+sub produce_revert_content {
+    my ( $self, $tr ) = @_;
+    my $schema = $tr->schema;
+    my $output;
+    for my $t ( $schema->get_tables ) {
+        $output .= sprintf "DROP TABLE IF EXISTS %s;\n", $t->name;
+    }
+    return $output;
+}
+
+package main;
+Chado::SqitchChange->new_with_options->execute();
+
+=head1 NAME
+
+chado_module_changes.pl - Generate sqitch compatible changes from chado schema definition
