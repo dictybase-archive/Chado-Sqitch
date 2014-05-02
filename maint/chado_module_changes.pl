@@ -64,7 +64,6 @@ sub execute {
     my $sqitch = App::Sqitch->new( { top_dir => $top_dir, verbosity => 1 } );
     my $template_dir = $self->create_template_dir;
     $self->create_templates($template_dir);
-    say $template_dir;
 
     for my $node ( $dom->findnodes("//module") ) {
         my $id = $node->getAttribute("id");
@@ -172,13 +171,10 @@ REVERT
     my $verify_content = <<"VERIFY";
 -- Verify chado module [% change %]
 
-BEGIN;
-
 [% IF verify_content %]
     [% verify_content %]
 [% END %]
 
-COMMIT;
 VERIFY
 
     $file = Path::Class::Dir->new($template_dir)->subdir("verify")
@@ -195,6 +191,7 @@ sub write_sqitch_plan {
 %syntax-version=1.0.0-b2
 %project=dictybase
 %uri=https://github.com/dictyBase/Chado-Sqitch
+
 CONTENT
         my $plan_file = $top_dir->file("sqitch.plan")->openw;
         $plan_file->print($content);
@@ -234,9 +231,9 @@ sub produce_verify_content {
     my $schema = $tr->schema;
     my $output;
     for my $t ( $schema->get_tables ) {
-        $output .= sprintf "SELECT pg_catalog.has_table_privilege(%s,'select');\n", $t->name;
+        $output .= sprintf "SELECT pg_catalog.has_table_privilege(%s%s%s,'select');\n", "'", $t->name, "'";
         for my $field($t->field_names){
-            $output .= sprintf "SELECT pg_catalog.has_column_privilege(%s, %s, 'select');\n",$t->name, $field;
+            $output .= sprintf "SELECT pg_catalog.has_column_privilege(%s%s%s, %s%s%s, 'select');\n","'",$t->name,"'", "'", $field, "'";
         }
     }
     return $output;

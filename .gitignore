@@ -17,3 +17,4 @@ local/
 .vim-cpan-module-cache
 .viminfo
 data/
+scratchpad/
