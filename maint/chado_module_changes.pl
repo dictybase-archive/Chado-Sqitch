@@ -79,7 +79,9 @@ sub execute {
                 "--set",
                 "deploy_content=$sqitch_content->[0]",
                 "--set",
-                "revert_content=$sqitch_content->[1]"
+                "revert_content=$sqitch_content->[1]",
+                "--set",
+                "verify_content=$sqitch_content->[2]"
             ];
             my $command = App::Sqitch::Command->load(
                 {   sqitch  => $sqitch,
@@ -103,7 +105,9 @@ sub execute {
                 "--set",
                 "deploy_content=$sqitch_content->[0]",
                 "--set",
-                "revert_content=$sqitch_content->[1]"
+                "revert_content=$sqitch_content->[1]",
+                "--set",
+                "verify_content=$sqitch_content->[2]"
             ];
             push @$args, "-r", $_ for @deps;
             my $command = App::Sqitch::Command->load(
@@ -208,7 +212,11 @@ sub get_sqitch_content {
     $tr->producer( sub { $self->produce_revert_content(@_) } )
         or die $tr->error;
     my $revert_content = $tr->translate( \$content ) or die $tr->error;
-    return [ $content, $revert_content ];
+
+    $tr->producer( sub { $self->produce_verify_content(@_) } )
+        or die $tr->error;
+    my $verify_content = $tr->translate( \$content ) or die $tr->error;
+    return [ $content, $revert_content , $verify_content];
 }
 
 sub produce_revert_content {
@@ -220,6 +228,20 @@ sub produce_revert_content {
     }
     return $output;
 }
+
+sub produce_verify_content {
+    my ($self,$tr) = @_;
+    my $schema = $tr->schema;
+    my $output;
+    for my $t ( $schema->get_tables ) {
+        $output .= sprintf "SELECT pg_catalog.has_table_privilege(%s,'select');\n", $t->name;
+        for my $field($t->field_names){
+            $output .= sprintf "SELECT pg_catalog.has_column_privilege(%s, %s, 'select');\n",$t->name, $field;
+        }
+    }
+    return $output;
+}
+
 
 package main;
 Chado::SqitchChange->new_with_options->execute();
