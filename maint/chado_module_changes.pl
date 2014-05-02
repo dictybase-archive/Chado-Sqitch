@@ -221,7 +221,7 @@ sub produce_revert_content {
     my $schema = $tr->schema;
     my $output;
     for my $t ( $schema->get_tables ) {
-        $output .= sprintf "DROP TABLE IF EXISTS %s;\n", $t->name;
+        $output .= sprintf "DROP TABLE IF EXISTS %s CASCADE;\n", $t->name;
     }
     return $output;
 }
