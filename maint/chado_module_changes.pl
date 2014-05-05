@@ -12,6 +12,8 @@ use File::Spec::Functions;
 use File::Path qw/make_path/;
 use feature qw/say/;
 use SQL::Translator;
+use Graph::Directed;
+use Carp::Always;
 with 'MooseX::Getopt';
 
 has sqitch_dir => (
@@ -60,45 +62,70 @@ sub execute {
 
     my $chado_folder = Path::Class::Dir->new( $children[0] );
     my $top_dir      = Path::Class::Dir->new( $self->sqitch_dir );
-    $self->write_sqitch_plan($top_dir);
+    $self->write_sqitch_plan( $top_dir->file("sqitch.plan") );
+    my $plan_dir = $top_dir->subdir("plans");
+    make_path( $plan_dir->stringify );
     my $sqitch = App::Sqitch->new( { top_dir => $top_dir, verbosity => 1 } );
     my $template_dir = $self->create_template_dir;
     $self->create_templates($template_dir);
 
+    my $graph = Graph::Directed->new;
+    my $modules;
+NODE:
     for my $node ( $dom->findnodes("//module") ) {
         my $id = $node->getAttribute("id");
-        if ( $id eq "general" ) {
-            my $sqitch_content
-                = $self->get_sqitch_content( $chado_folder, $node );
-            my $args = [
-                $id,
-                "-n sql for $id chado module",
-                "--template-directory",
-                $template_dir,
-                "--set",
-                "deploy_content=$sqitch_content->[0]",
-                "--set",
-                "revert_content=$sqitch_content->[1]",
-                "--set",
-                "verify_content=$sqitch_content->[2]"
-            ];
-            my $command = App::Sqitch::Command->load(
-                {   sqitch  => $sqitch,
-                    command => 'add',
-                    config  => $sqitch->config,
-                    args    => $args
-                }
-            );
-            $command->execute(@$args);
-        }
+        next NODE if $id eq 'composite';
+        say "node is $id";
+        my $sqitch_content
+            = $self->get_sqitch_content( $chado_folder, $node );
+        my $args = [
+            $id,                    "-n sql for $id chado module",
+            "--template-directory", $template_dir,
+            "--set",                "deploy_content=$sqitch_content->[0]",
+            "--set",                "revert_content=$sqitch_content->[1]",
+            "--set",                "verify_content=$sqitch_content->[2]"
+        ];
+        my $command = App::Sqitch::Command->load(
+            {   sqitch  => $sqitch,
+                command => 'add',
+                config  => $sqitch->config,
+                args    => $args
+            }
+        );
+        $command->execute(@$args);
+
         if ( $node->exists("dependency") ) {
-            my @deps = map { $_->getAttribute("to") }
-                $node->findnodes("dependency");
+            for my $dep ( $node->findnodes("dependency") ) {
+                my $name = $dep->getAttribute("to");
+                if ( !$graph->has_edge( $name, $id ) ) {
+                    $graph->add_edge( $name, $id );
+                }
+            }
+        }
+
+        $modules->{$id} = $node;
+    }
+
+    for my $id ( keys %$modules ) {
+        say "going for fake $id";
+        my $plan_file = $plan_dir->file( $id . ".plan" );
+        $self->write_sqitch_plan($plan_file);
+        my $module_dir  = File::Temp->newdir->dirname;
+        my $temp_sqitch = App::Sqitch->new(
+            {   top_dir   => Path::Class::Dir->new($module_dir),
+                verbosity => 1,
+                plan_file => $plan_file
+            }
+        );
+        my @deps = $graph->all_predecessors($id);
+        for my $pre (@deps) {
+            say "got pre $pre";
             my $sqitch_content
-                = $self->get_sqitch_content( $chado_folder, $node );
+                = $self->get_sqitch_content( $chado_folder,
+                $modules->{$pre} );
             my $args = [
-                $id,
-                "-n sql for $id chado module",
+                $pre,
+                "-n sql for $pre chado module",
                 "--template-directory",
                 $template_dir,
                 "--set",
@@ -108,16 +135,35 @@ sub execute {
                 "--set",
                 "verify_content=$sqitch_content->[2]"
             ];
-            push @$args, "-r", $_ for @deps;
+
             my $command = App::Sqitch::Command->load(
-                {   sqitch  => $sqitch,
+                {   sqitch  => $temp_sqitch,
                     command => 'add',
-                    config  => $sqitch->config,
+                    config  => $temp_sqitch->config,
                     args    => $args
                 }
             );
             $command->execute(@$args);
         }
+
+        my $sqitch_content
+            = $self->get_sqitch_content( $chado_folder, $modules->{$id} );
+        my $args = [
+            $id,                    "-n sql for $id chado module",
+            "--template-directory", $template_dir,
+            "--set",                "deploy_content=$sqitch_content->[0]",
+            "--set",                "revert_content=$sqitch_content->[1]",
+            "--set",                "verify_content=$sqitch_content->[2]"
+        ];
+        push @$args, "-r", $_ for @deps;
+        my $command = App::Sqitch::Command->load(
+            {   sqitch  => $temp_sqitch,
+                command => 'add',
+                config  => $temp_sqitch->config,
+                args    => $args
+            }
+        );
+        $command->execute(@$args);
     }
 }
 
@@ -185,17 +231,17 @@ VERIFY
 }
 
 sub write_sqitch_plan {
-    my ( $self, $top_dir ) = @_;
-    if ( !-e $top_dir->file("sqitch.plan") ) {
+    my ( $self, $plan_file ) = @_;
+    if ( !-e $plan_file ) {
         my $content = <<"CONTENT";
 %syntax-version=1.0.0-b2
 %project=dictybase
 %uri=https://github.com/dictyBase/Chado-Sqitch
 
 CONTENT
-        my $plan_file = $top_dir->file("sqitch.plan")->openw;
-        $plan_file->print($content);
-        $plan_file->close;
+        my $output = $plan_file->openw;
+        $output->print($content);
+        $output->close;
     }
 }
 
@@ -213,7 +259,7 @@ sub get_sqitch_content {
     $tr->producer( sub { $self->produce_verify_content(@_) } )
         or die $tr->error;
     my $verify_content = $tr->translate( \$content ) or die $tr->error;
-    return [ $content, $revert_content , $verify_content];
+    return [ $content, $revert_content, $verify_content ];
 }
 
 sub produce_revert_content {
@@ -227,18 +273,24 @@ sub produce_revert_content {
 }
 
 sub produce_verify_content {
-    my ($self,$tr) = @_;
+    my ( $self, $tr ) = @_;
     my $schema = $tr->schema;
     my $output;
     for my $t ( $schema->get_tables ) {
-        $output .= sprintf "SELECT pg_catalog.has_table_privilege(%s%s%s,'select');\n", "'", $t->name, "'";
-        for my $field($t->field_names){
-            $output .= sprintf "SELECT pg_catalog.has_column_privilege(%s%s%s, %s%s%s, 'select');\n","'",$t->name,"'", "'", $field, "'";
+        $output
+            .= sprintf
+            "SELECT pg_catalog.has_table_privilege(%s%s%s,'select');\n",
+            "'",
+            $t->name, "'";
+        for my $field ( $t->field_names ) {
+            $output
+                .= sprintf
+                "SELECT pg_catalog.has_column_privilege(%s%s%s, %s%s%s, 'select');\n",
+                "'", $t->name, "'", "'", $field, "'";
         }
     }
     return $output;
 }
-
 
 package main;
 Chado::SqitchChange->new_with_options->execute();
