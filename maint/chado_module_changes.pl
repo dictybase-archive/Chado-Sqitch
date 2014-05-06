@@ -117,7 +117,13 @@ NODE:
                 plan_file => $plan_file
             }
         );
-        my @deps = $graph->all_predecessors($id);
+        # ascending sort based on number of predecessors of every chado module
+        # The one with less will go on top
+        my @deps
+            = map { $_->[0] }
+            sort  { $a->[1] <=> $b->[1] }
+            map { [ $_, scalar $graph->all_predecessors($_) ] }
+            $graph->all_predecessors($id);
         for my $pre (@deps) {
             say "got pre $pre";
             my $sqitch_content
