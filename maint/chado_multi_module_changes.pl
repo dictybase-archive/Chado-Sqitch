@@ -303,4 +303,25 @@ Chado::SqitchChange->new_with_options->execute();
 
 =head1 NAME
 
-chado_module_changes.pl - Generate sqitch compatible changes from chado schema definition
+chado_multi_module_changes.pl - Generate sqitch compatible plan file and changes for every chado modules
+
+=head1 SYNOPSIS
+
+ perl chado_multi_module_changes.pl --sqitch_dir myproject 
+
+ perl chado_multi_module_changes.pl --sqitch_dir myproject  chado-1.11.tar.gz
+
+=head1 DESCRIPTION
+
+Given a chado distribution tarball(local or remote), generates individual sqitch changes and plan 
+file for every chado module. The changes(deploy,revert and verify) are written in the given folder
+(--sqitch_dir) under deploy,revert and verify respectively. The plans are written in the B<plans> subfolder
+under the chado module name.
+
+=head1 Why this script
+
+The script was created to experiment working with multiple and custom plan files. The result did not work out as intended
+as B<sqitch> only works with a single plan file for a individual project. So, currently it is here for
+learning purposes.
+
+
