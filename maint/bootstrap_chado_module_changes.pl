@@ -192,10 +192,6 @@ BEGIN;
     [% revert_content %]
 [% END %]
 
-[% IF change == "sequence" %]
-   DROP SEQUENCE IF EXISTS feature_uniquename_seq;
-[% END %]
-
 COMMIT;
 REVERT
 
@@ -258,6 +254,9 @@ sub produce_revert_content {
     my $output;
     for my $t ( $schema->get_tables ) {
         $output .= sprintf "DROP TABLE IF EXISTS %s CASCADE;\n", $t->name;
+        if ($t->name eq "feature") {
+            $output .= "DROP SEQUENCE IF EXISTS feature_uniquename_seq;\n";
+        }
     }
     return $output;
 }
