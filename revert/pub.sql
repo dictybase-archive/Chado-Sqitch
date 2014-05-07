@@ -1,0 +1,14 @@
+-- Revert chado module pub
+
+BEGIN;
+
+
+    DROP TABLE IF EXISTS pub CASCADE;
+DROP TABLE IF EXISTS pub_relationship CASCADE;
+DROP TABLE IF EXISTS pub_dbxref CASCADE;
+DROP TABLE IF EXISTS pubauthor CASCADE;
+DROP TABLE IF EXISTS pubprop CASCADE;
+
+
+
+COMMIT;

@@ -1,5 +1,21 @@
 %syntax-version=1.0.0-b2
 %project=dictybase
+%uri=https://github.com/dictyBase/Chado-Sqitch
 
-chado_1.1 2013-07-01T19:04:13Z Yogesh Pandit <yogesh.pandit@northwestern.edu> # Chado 1.1
-chado_1.2 2013-07-01T20:46:50Z Yogesh Pandit <yogesh.pandit@northwestern.edu> # Chado 1.2
+general 2014-05-07T18:56:12Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for general chado module
+cv 2014-05-07T18:56:12Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for cv chado module
+contact [general cv] 2014-05-07T18:56:12Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for contact chado module
+organism [general cv] 2014-05-07T18:56:24Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for organism chado module
+pub [general cv] 2014-05-07T18:56:34Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for pub chado module
+sequence [general cv organism pub] 2014-05-07T18:56:49Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for sequence chado module
+expression [general cv pub organism sequence] 2014-05-07T18:57:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for expression chado module
+library [general cv pub organism sequence] 2014-05-07T18:57:19Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for library chado module
+companalysis [general cv organism pub sequence] 2014-05-07T18:57:30Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for companalysis chado module
+map [general cv organism pub sequence] 2014-05-07T18:57:41Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for map chado module
+phenotype [general cv pub organism sequence] 2014-05-07T18:57:53Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for phenotype chado module
+mage [general cv organism pub contact sequence companalysis] 2014-05-07T18:58:07Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for mage chado module
+cell_line [general cv pub organism sequence library] 2014-05-07T18:58:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for cell_line chado module
+phylogeny [general cv organism pub sequence companalysis] 2014-05-07T20:18:30Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for phylogeny chado module
+genetic [general cv pub organism sequence phenotype] 2014-05-07T20:19:08Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for genetic chado module
+stock [general cv organism contact pub sequence phenotype genetic] 2014-05-07T20:26:37Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for stock chado module
+@chado-1.11 2014-05-07T20:36:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for all chado-1.11 modules

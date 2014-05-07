@@ -7,10 +7,10 @@
 	# verify_dir = verify
 	# extension = sql
 [core "pg"]
-	db_name = <db-name> 
+	db_name = <db-name>
 	# client = psql
 	# username = 
 	# password = 
-	# host = 
+	# host =  
 	# port = 
 	# sqitch_schema = sqitch
