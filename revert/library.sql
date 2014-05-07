@@ -1,0 +1,17 @@
+-- Revert chado module library
+
+BEGIN;
+
+
+    DROP TABLE IF EXISTS library CASCADE;
+DROP TABLE IF EXISTS library_synonym CASCADE;
+DROP TABLE IF EXISTS library_pub CASCADE;
+DROP TABLE IF EXISTS libraryprop CASCADE;
+DROP TABLE IF EXISTS libraryprop_pub CASCADE;
+DROP TABLE IF EXISTS library_cvterm CASCADE;
+DROP TABLE IF EXISTS library_feature CASCADE;
+DROP TABLE IF EXISTS library_dbxref CASCADE;
+
+
+
+COMMIT;
