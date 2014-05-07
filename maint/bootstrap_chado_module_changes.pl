@@ -99,7 +99,7 @@ NODE:
     my $sqitch = App::Sqitch->new( { top_dir => $top_dir, verbosity => 1 } );
     my $plan = App::Sqitch::Plan->new( sqitch => $sqitch );
     my $change = $self->module;
-    die "$plan already deployed" if $plan->contains($change);
+    die "plan $change already deployed" if $plan->contains($change);
 
     # ascending sort based on number of predecessors of every chado module
     # The one with less will go on top
@@ -190,6 +190,10 @@ BEGIN;
 
 [% IF revert_content %]
     [% revert_content %]
+[% END %]
+
+[% IF change == "sequence" %]
+   DROP SEQUENCE IF EXISTS feature_uniquename_seq;
 [% END %]
 
 COMMIT;
