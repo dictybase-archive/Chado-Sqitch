@@ -1,5 +1,6 @@
 -- Verify chado module cv
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('cv','select');
 SELECT pg_catalog.has_column_privilege('cv', 'cv_id', 'select');
@@ -49,4 +50,4 @@ SELECT pg_catalog.has_column_privilege('dbxrefprop', 'value', 'select');
 SELECT pg_catalog.has_column_privilege('dbxrefprop', 'rank', 'select');
 
 
-
+ROLLBACK;

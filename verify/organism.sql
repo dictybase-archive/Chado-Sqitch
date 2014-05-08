@@ -1,5 +1,6 @@
 -- Verify chado module organism
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('organism','select');
 SELECT pg_catalog.has_column_privilege('organism', 'organism_id', 'select');
@@ -20,4 +21,4 @@ SELECT pg_catalog.has_column_privilege('organismprop', 'value', 'select');
 SELECT pg_catalog.has_column_privilege('organismprop', 'rank', 'select');
 
 
-
+ROLLBACK;

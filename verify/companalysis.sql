@@ -1,5 +1,6 @@
 -- Verify chado module companalysis
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('analysis','select');
 SELECT pg_catalog.has_column_privilege('analysis', 'analysis_id', 'select');
@@ -34,4 +35,4 @@ SELECT pg_catalog.has_column_privilege('analysisfeatureprop', 'value', 'select')
 SELECT pg_catalog.has_column_privilege('analysisfeatureprop', 'rank', 'select');
 
 
-
+ROLLBACK;

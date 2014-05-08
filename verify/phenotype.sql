@@ -1,5 +1,6 @@
 -- Verify chado module phenotype
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('phenotype','select');
 SELECT pg_catalog.has_column_privilege('phenotype', 'phenotype_id', 'select');
@@ -20,4 +21,4 @@ SELECT pg_catalog.has_column_privilege('feature_phenotype', 'feature_id', 'selec
 SELECT pg_catalog.has_column_privilege('feature_phenotype', 'phenotype_id', 'select');
 
 
-
+ROLLBACK;

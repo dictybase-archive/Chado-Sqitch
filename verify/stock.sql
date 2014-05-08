@@ -1,5 +1,6 @@
 -- Verify chado module stock
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('stock','select');
 SELECT pg_catalog.has_column_privilege('stock', 'stock_id', 'select');
@@ -66,5 +67,4 @@ SELECT pg_catalog.has_column_privilege('stockcollection_stock', 'stockcollection
 SELECT pg_catalog.has_column_privilege('stockcollection_stock', 'stockcollection_id', 'select');
 SELECT pg_catalog.has_column_privilege('stockcollection_stock', 'stock_id', 'select');
 
-
-
+ROLLBACK;
