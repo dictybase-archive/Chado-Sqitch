@@ -21,3 +21,4 @@ stock [general cv organism contact pub sequence phenotype genetic] 2014-05-07T20
 @chado-1.11 2014-05-07T20:36:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for all chado-1.11 modules
 
 cvprop [cv] 2014-05-08T09:06:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding cvprop table
+chadoprop [cv] 2014-05-08T10:31:53Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding chadoprop table
