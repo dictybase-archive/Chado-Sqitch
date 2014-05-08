@@ -24,3 +24,4 @@ cvprop [cv] 2014-05-08T09:06:06Z Siddhartha Basu <siddhartha-basu@northwestern.e
 chadoprop [cv] 2014-05-08T10:31:53Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding chadoprop table
 phentext [phenotype] 2014-05-08T10:56:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding name column in phenotype table
 gentypeid [genetic] 2014-05-08T11:21:36Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding type_id column in phenotype table
+genotypeprop [genetic] 2014-05-08T15:14:39Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding gentotypeprop table
