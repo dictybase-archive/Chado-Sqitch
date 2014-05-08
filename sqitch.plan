@@ -26,3 +26,4 @@ phentext [phenotype] 2014-05-08T10:56:22Z Siddhartha Basu <siddhartha-basu@north
 gentypeid [genetic] 2014-05-08T11:21:36Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding type_id column in phenotype table
 genotypeprop [genetic] 2014-05-08T15:14:39Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding gentotypeprop table
 project [general cv pub contact] 2014-05-08T15:38:17Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for project chado module
+natural-diversity [general cv organism contact pub sequence project phenotype genetic stock] 2014-05-08T15:53:16Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for natural-diversity chado module
