@@ -19,3 +19,5 @@ phylogeny [general cv organism pub sequence companalysis] 2014-05-07T20:18:30Z S
 genetic [general cv pub organism sequence phenotype] 2014-05-07T20:19:08Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for genetic chado module
 stock [general cv organism contact pub sequence phenotype genetic] 2014-05-07T20:26:37Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for stock chado module
 @chado-1.11 2014-05-07T20:36:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for all chado-1.11 modules
+
+cvprop [cv] 2014-05-08T09:06:06Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Adding cvprop table
