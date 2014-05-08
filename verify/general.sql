@@ -1,5 +1,6 @@
 -- Verify chado module general
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('tableinfo','select');
 SELECT pg_catalog.has_column_privilege('tableinfo', 'tableinfo_id', 'select');
@@ -28,4 +29,4 @@ SELECT pg_catalog.has_column_privilege('project', 'name', 'select');
 SELECT pg_catalog.has_column_privilege('project', 'description', 'select');
 
 
-
+ROLLBACK;

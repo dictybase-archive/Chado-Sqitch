@@ -1,5 +1,7 @@
 -- Verify chado module expression
 
+BEGIN;
+
 
     SELECT pg_catalog.has_table_privilege('expression','select');
 SELECT pg_catalog.has_column_privilege('expression', 'expression_id', 'select');
@@ -50,4 +52,4 @@ SELECT pg_catalog.has_column_privilege('expression_image', 'expression_id', 'sel
 SELECT pg_catalog.has_column_privilege('expression_image', 'eimage_id', 'select');
 
 
-
+ROLLBACK;

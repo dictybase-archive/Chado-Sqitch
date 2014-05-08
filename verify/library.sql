@@ -1,5 +1,7 @@
 -- Verify chado module library
 
+BEGIN;
+
 
     SELECT pg_catalog.has_table_privilege('library','select');
 SELECT pg_catalog.has_column_privilege('library', 'library_id', 'select');
@@ -47,4 +49,4 @@ SELECT pg_catalog.has_column_privilege('library_dbxref', 'dbxref_id', 'select');
 SELECT pg_catalog.has_column_privilege('library_dbxref', 'is_current', 'select');
 
 
-
+ROLLBACK;

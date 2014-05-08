@@ -1,5 +1,6 @@
 -- Verify chado module cell_line
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('cell_line','select');
 SELECT pg_catalog.has_column_privilege('cell_line', 'cell_line_id', 'select');
@@ -62,5 +63,5 @@ SELECT pg_catalog.has_column_privilege('cell_line_library', 'cell_line_id', 'sel
 SELECT pg_catalog.has_column_privilege('cell_line_library', 'library_id', 'select');
 SELECT pg_catalog.has_column_privilege('cell_line_library', 'pub_id', 'select');
 
-
+ROLLBACK;
 

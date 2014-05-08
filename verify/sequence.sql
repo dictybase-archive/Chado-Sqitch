@@ -1,5 +1,6 @@
 -- Verify chado module sequence
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('feature','select');
 SELECT pg_catalog.has_column_privilege('feature', 'feature_id', 'select');
@@ -113,4 +114,4 @@ SELECT pg_catalog.has_column_privilege('feature_synonym', 'is_current', 'select'
 SELECT pg_catalog.has_column_privilege('feature_synonym', 'is_internal', 'select');
 
 
-
+ROLLBACK;
