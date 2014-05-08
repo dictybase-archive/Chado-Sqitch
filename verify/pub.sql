@@ -1,5 +1,7 @@
 -- Verify chado module pub
 
+BEGIN;
+
 
     SELECT pg_catalog.has_table_privilege('pub','select');
 SELECT pg_catalog.has_column_privilege('pub', 'pub_id', 'select');
@@ -42,4 +44,4 @@ SELECT pg_catalog.has_column_privilege('pubprop', 'value', 'select');
 SELECT pg_catalog.has_column_privilege('pubprop', 'rank', 'select');
 
 
-
+ROLLBACK;

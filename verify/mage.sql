@@ -1,5 +1,6 @@
 -- Verify chado module mage
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('mageml','select');
 SELECT pg_catalog.has_column_privilege('mageml', 'mageml_id', 'select');
@@ -243,4 +244,4 @@ SELECT pg_catalog.has_column_privilege('studyprop_feature', 'feature_id', 'selec
 SELECT pg_catalog.has_column_privilege('studyprop_feature', 'type_id', 'select');
 
 
-
+ROLLBACK;

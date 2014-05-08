@@ -204,7 +204,9 @@ REVERT
 -- Verify chado module [% change %]
 
 [% IF verify_content %]
+    BEGIN;
     [% verify_content %]
+    ROLLBACK;
 [% END %]
 
 VERIFY

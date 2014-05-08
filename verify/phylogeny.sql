@@ -1,5 +1,6 @@
 -- Verify chado module phylogeny
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('phylotree','select');
 SELECT pg_catalog.has_column_privilege('phylotree', 'phylotree_id', 'select');
@@ -49,4 +50,4 @@ SELECT pg_catalog.has_column_privilege('phylonode_relationship', 'rank', 'select
 SELECT pg_catalog.has_column_privilege('phylonode_relationship', 'phylotree_id', 'select');
 
 
-
+ROLLBACK;

@@ -1,5 +1,6 @@
 -- Verify chado module contact
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('contact','select');
 SELECT pg_catalog.has_column_privilege('contact', 'contact_id', 'select');
@@ -12,5 +13,6 @@ SELECT pg_catalog.has_column_privilege('contact_relationship', 'type_id', 'selec
 SELECT pg_catalog.has_column_privilege('contact_relationship', 'subject_id', 'select');
 SELECT pg_catalog.has_column_privilege('contact_relationship', 'object_id', 'select');
 
+ROLLBACK;
 
 

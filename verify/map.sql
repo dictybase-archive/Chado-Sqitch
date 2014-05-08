@@ -1,5 +1,6 @@
 -- Verify chado module map
 
+BEGIN;
 
     SELECT pg_catalog.has_table_privilege('featuremap','select');
 SELECT pg_catalog.has_column_privilege('featuremap', 'featuremap_id', 'select');
@@ -27,4 +28,4 @@ SELECT pg_catalog.has_column_privilege('featuremap_pub', 'featuremap_id', 'selec
 SELECT pg_catalog.has_column_privilege('featuremap_pub', 'pub_id', 'select');
 
 
-
+ROLLBACK;

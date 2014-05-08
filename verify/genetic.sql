@@ -1,5 +1,7 @@
 -- Verify chado module genetic
 
+BEGIN;
+
 
     SELECT pg_catalog.has_table_privilege('genotype','select');
 SELECT pg_catalog.has_column_privilege('genotype', 'genotype_id', 'select');
@@ -54,4 +56,4 @@ SELECT pg_catalog.has_column_privilege('phenotype_comparison_cvterm', 'pub_id', 
 SELECT pg_catalog.has_column_privilege('phenotype_comparison_cvterm', 'rank', 'select');
 
 
-
+ROLLBACK;
