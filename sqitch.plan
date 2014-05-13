@@ -2,4 +2,3 @@
 %project=dictybase
 %uri=https://github.com/dictyBase/Chado-Sqitch
 
-chadoschema 2014-04-17T20:47:03Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Add a schema namespace for chado
