@@ -9,3 +9,9 @@ organism 2014-05-13T20:45:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu>
 sequence 2014-05-13T20:45:33Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for sequence chado module
 companalysis [general cv pub organism sequence] 2014-05-13T20:45:33Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for companalysis chado module
 @dictychado-1.23-comanalysis 2014-05-13T20:50:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for dictychado companalysis module
+
+contact 2014-05-13T20:52:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for contact chado module
+phenotype 2014-05-13T20:52:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for phenotype chado module
+genetic 2014-05-13T20:52:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for genetic chado module
+stock [general cv contact organism pub sequence phenotype genetic] 2014-05-13T20:52:23Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for stock chado module
+@dictychado-1.23 2014-05-13T20:53:21Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for latest dictychado
