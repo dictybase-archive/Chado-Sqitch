@@ -2,3 +2,10 @@
 %project=dictybase
 %uri=https://github.com/dictyBase/Chado-Sqitch
 
+general 2014-05-13T20:45:31Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for general chado module
+cv 2014-05-13T20:45:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for cv chado module
+pub 2014-05-13T20:45:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for pub chado module
+organism 2014-05-13T20:45:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for organism chado module
+sequence 2014-05-13T20:45:33Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for sequence chado module
+companalysis [general cv pub organism sequence] 2014-05-13T20:45:33Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for companalysis chado module
+@dictychado-1.23-comanalysis 2014-05-13T20:50:32Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for dictychado companalysis module
