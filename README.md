@@ -1,7 +1,15 @@
-# What is Chado-Sqitch ? 
-Chado-Sqitch is a project to manage changes in [chado](http://gmod.org/wiki/Introduction_to_Chado) database, an open-source relational database schema for biological
-datasets. It uses [Sqitch](http://sqitch.org), to implement the database change management. It also provides two optional ```sqitch``` commands, ```dump``` and ```load``` that
-backup and restore database content for every database change.
+# Introduction 
+* Chado-Sqitch is a project to install and manage chado database schema in postgresql database and more. 
+* [Chado](http://gmod.org/wiki/Introduction_to_Chado) is an open-source relational database schema for biological data.
+* [Sqitch](http://sqitch.org) is a Perl tool to manage changes in database structure. 
+## Why this project ?
+* Chado is a generic schema and in highly extensible so that it can be easily
+  customized to incorporate various biological data type. This project
+  integrates sqitch to painlessly manage and version those changes.
+* All changes can be managed without breaking compatibility with core schema changes.
+* It deals with schema and database scheme only, completely free of any loader scripts. It is BYOL(bring your own loader) system.
+## Extra
+It comes with two command line tools ```load``` and ```dump``` to manage postgresql dump along with every versioned changes.
 
 [![Build Status](https://secure.travis-ci.org/dictyBase/Chado-Sqitch.png)](https://travis-ci.org/dictyBase/Chado-Sqitch) 
 
