@@ -2,12 +2,14 @@
 * Chado-Sqitch is a project to install and manage chado database schema in postgresql database and more. 
 * [Chado](http://gmod.org/wiki/Introduction_to_Chado) is an open-source relational database schema for biological data.
 * [Sqitch](http://sqitch.org) is a Perl tool to manage changes in database structure. 
+
 ## Why this project ?
 * Chado is a generic schema and in highly extensible so that it can be easily
   customized to incorporate various biological data type. This project
   integrates sqitch to painlessly manage and version those changes.
 * All changes can be managed without breaking compatibility with core schema changes.
 * It deals with schema and database scheme only, completely free of any loader scripts. It is BYOL(bring your own loader) system.
+
 ## Extra
 It comes with two command line tools ```load``` and ```dump``` to manage postgresql dump along with every versioned changes.
 
@@ -142,7 +144,47 @@ To install the previous version, use the particular tag
 * Once the core chado is installed, any new customization or changes can be
   added using sqitch
 
-### Adding changes
+#### Customizing core chado schema
+* To understand the basic sqitch command, do go through this sqitch documentation.
+
+```shell
+$_> sqitch add mychange -n 'my first change on chado database'
+```
+
+It will create three folders ```deploy```, ```revert``` and ```verify``` each
+with a single file named ```mychange.sql```. Add your sql statements to each of
+this file and then deploy.
+
+```$_> sqitch deploy```
+
+* To make sure each deploy gets verified
+
+```$_> sqitch config --bool deploy.verify true ```
+
+* Save all changes to git
+
+```
+$_> git add sqitch.plan deploy revert verify
+$_> git commit -n 'added my first change'
+```
+
+* Optionally push it to remote
+
+```$_> git push myremote```
+
+* In case the change is not desirable and would like to get back the core chado
+
+```$_> sqitch revert --to @chado-1.23```
+
+#### Syncronizing with core chado updates
+* Pull chado updates from __Chado-Sqitch__ project.
+
+```
+$_> git fetch origin && git merge master
+$_> sqitch deploy
+```
+
+That's all folks for now.
 
 
 # Scope
