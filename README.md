@@ -11,16 +11,14 @@
 ## Extra
 It comes with two command line tools ```load``` and ```dump``` to manage postgresql dump along with every versioned changes.
 
-
 # Use cases
 Chado schema is generic and could be used in variety of ways. So, the
 application of this project depends on the use case. A few of the cases are
 described below. Do consult the scope of this project  before you go ahead.
+All commands are expected to be executed from a command line terminal interface.
 
 ## Install chado schema only
-
-__Circumstance:__ Straight install of chado schema, no management or anything else.
-
+__Circumstance:__ Simple straight install of chado schema, no management or anything else.
 
 * Download one of the core chado schema from [release](https://github.com/dictyBase/Chado-Sqitch/releases) page. 
 * Extract the archive and change to that folder.
@@ -60,54 +58,46 @@ $_> sqitch target add gmod db:pg://gmod:gmod@localhost/gmod
 $_> sqitch config core.pg.target gmod
 ``` 
 
-* Deploy the chado database schema 
+* Deploy the chado database schema to default database
 
 ```$_> sqitch deploy ```
+
+
+* Deploy to another database
+
+```shell
+$_> sqitch target add mymod db:pg://mychado:chado123@localhost/mymod
+$_> sqitch deploy -t mymod
+```
 
 __Done.__
 
 
-## Install chado schema for versioning
+## Install chado schema and manage database changes
 __Circumstance:__ Installation of chado schema for extending and customization.
 Also, might need to add other database tables, schemas that is unrelated to chado
 but needed to work with software application layer, for example user management tables.
 
-# Scope
-* Works only with postgresql database.
-* Installation and configuration of postgresql database is beyond the scope of this project.
-* Does not create or manage databases or user accounts. Use ```psql``` or postgresql tools for that.
 
-
-## Developer's guide
-It is intended for contributors/developers who wants to add/edit schema changes to this project.
-The changes are finally expected to be installed in production environment.
-
-* Install custom perl using either [perlbrew](http://perlbrew.pl/) or [plenv](https://github.com/tokuhirom/plenv). 
-  Plenv is recommended.
-* Install [cpanm](https://metacpan.org/release/App-cpanminus) using ```perlbrew``` or ```plenv```.
-* Install local::lib.
-
-```
-$_> cpanm local::lib
-```
-
-* Install postgresql database server. If the server is available in a separate box, install the client libraries only. 
-* Checkout [Chado-Sqitch](https://github.com/dictyBase/Chado-Sqitch) project.
-
-```$_> git clone https://github.com/dictyBase/Chado-Sqitch```
-
-* For rest of steps switch to the Chado-Sqitch directory.
-
-```$_> cd Chado-Sqitch```
-
-* Install sqitch from source. Preferably install using local::lib.
+* Install git.
+* Clone this repository and switch to that folder.
 
 ```shell
-$_> eval $(perl -I${PWD}/local/lib/perl5 -I${PWD}/lib -Mlocal::lib=${PWD}/local)
-$_> cpanm .
+$_> git clone https://github.com/dictyBase/Chado-Sqitch
+$_> cd Chado-sqitch
 ```
 
+* Create a new git branch
+
+```shell
+$_> git checkout -b mychado
+```
+
+* [Install](http://sqitch.org) sqitch.
+* Install postgresql database server.  
 * Create an user and postgresql database to install chado.
+
+__Example__
 
 ```shell
 $_> createuser -E -l -U <superuser> gmod
@@ -120,6 +110,7 @@ The above commands with create a ```gmod``` user and database.
 
 ```$_> cp sqitch.conf.sample sqitch.conf``` 
 
+
 * Add basic configuration
 
 ```shell
@@ -128,7 +119,11 @@ $_> sqitch config --user user.email "user email"
 $_> sqitch config --user core.pg.client `which psql`
 ```
 
-* Add database configuration. It assumes a postgresql server running locally with a
+* Add database configuration. 
+
+__Example__
+
+It assumes a postgresql server running locally with a
   database, user and password with __gmod__.
 
 ```shell
@@ -136,7 +131,23 @@ $_> sqitch target add gmod db:pg://gmod:gmod@localhost/gmod
 $_> sqitch config core.pg.target gmod
 ``` 
 
-* Deploy the chado database schema 
+* Deploy the core chado database schema. By default it will install chado-1.23. 
 
-```$_> sqitch deploy ```
+```$_> sqitch deploy```
+
+To install the previous version, use the particular tag
+
+```$_> sqitch deploy @chado-1.11```
+
+* Once the core chado is installed, any new customization or changes can be
+  added using sqitch
+
+### Adding changes
+
+
+# Scope
+* Works only with postgresql database.
+* Installation and configuration of postgresql database is beyond the scope of this project.
+* Does not create or manage databases or user accounts. Use ```psql``` or postgresql tools for that.
+
 
