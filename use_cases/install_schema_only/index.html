@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../..//img/favicon.ico">
+
+        <title>Install chado schema - Chado Sqitch Documentation</title>
+
+        <link href="../..//css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../..//css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../..//css/prettify-1.0.css" rel="stylesheet">
+        <link href="../..//css/base.css" rel="stylesheet">
+        
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="../../">Chado Sqitch Documentation</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../../">About</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Use Cases <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            <li class="active">
+                                <a href="./">Install chado schema</a>
+                            </li>
+                        
+                            <li >
+                                <a href="../install_schema_manage/">Install and manage chado schema</a>
+                            </li>
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+            
+
+            
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+                
+                <li >
+                    <a rel="next" href="../../">
+                        <i class="fa fa-arrow-left"></i> Previous
+                    </a>
+                </li>
+                <li >
+                    <a rel="prev" href="../install_schema_manage/">
+                        Next <i class="fa fa-arrow-right"></i>
+                    </a>
+                </li>
+                
+                
+                <li>
+                    <a href="https://github.com/dictyBase/Chado-Sqitch">
+                        
+                            <i class="fa fa-github"></i>
+                        
+                        GitHub
+                    </a>
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#install-chado-schema-only">Install chado schema only</a></li>
+        
+            <li><a href="#circumstance">Circumstance</a></li>
+        
+            <li><a href="#steps">Steps</a></li>
+        
+    
+    </ul>
+</div></div>
+            <div class="col-md-9" role="main">
+
+<h2 id="install-chado-schema-only">Install chado schema only</h2>
+<h3 id="circumstance">Circumstance</h3>
+<p>Simple straight install of chado schema, no management or anything else.</p>
+<h3 id="steps">Steps</h3>
+<h4 id="download-one-of-the-core-chado-schema-from-release-page">Download one of the core chado schema from <a href="https://github.com/dictyBase/Chado-Sqitch/releases">release</a> page</h4>
+<pre class="prettyprint well"><code>$_&gt; curl -O https://github.com/dictyBase/Chado-Sqitch/releases/download/chado-1.23/sqitch-chado-1.23.tar.gz
+</code></pre>
+
+<h4 id="extract-the-archive-and-change-to-that-folder">Extract the archive and change to that folder</h4>
+<pre class="prettyprint well"><code>$_&gt; tar xvzf sqitch-chado-1.23.tar.gz
+$_&gt; cd sqitch-chado-1.23/
+</code></pre>
+
+<h4 id="install-sqitch">Install sqitch</h4>
+<p>Follow the instruction from <a href="http://sqitch.org">sqitch</a> website.</p>
+<pre class="prettyprint well"><code>#For MacOSX
+$_&gt; brew tap theory/sqitch
+$_&gt; brew install sqitch_pg
+
+#For Windows
+$_&gt; ppm install App-Sqitch
+
+#And from source using cpanminus
+$_&gt; cpanm DBD::Pg App::Sqitch
+</code></pre>
+
+<h4 id="install-postgresql">Install postgresql</h4>
+<p>Not neccessary if there is one already available locally or in another host.</p>
+<h4 id="create-database-and-user">Create database and user</h4>
+<p>The following commands with create a <code>gmod</code> user and database in a
+locally available postgresql database. This particular user/database
+combination is refered throughout the examples.</p>
+<pre class="prettyprint well"><code>$_&gt; createuser -E -l -U &lt;superuser&gt; gmod
+$_&gt; createdb -O gmod -U &lt;superuser&gt; gmod
+</code></pre>
+
+<h4 id="create-sqitch-configuration">Create sqitch configuration</h4>
+<p>The sqitch configuration file is generally ignored in the git repository and
+should not commited. This project comes with one example.</p>
+<pre class="prettyprint well"><code>$_&gt; cp sqitch.conf.sample sqitch.conf
+</code></pre>
+
+<p>Add basic configuration</p>
+<pre class="prettyprint well"><code>$_&gt; sqitch config --user core.pg.client `which psql`
+</code></pre>
+
+<h4 id="add-database-configuration">Add database configuration</h4>
+<p>It assumes a postgresql server running locally with a database, user and
+password with <strong>gmod</strong>. It allows to run the commands without specifying them
+everytime. The database connection URI
+<a href="https://metacpan.org/pod/URI::db">specification</a> is given here.</p>
+<pre class="prettyprint well"><code>$_&gt; sqitch target add gmod db:pg://gmod:gmod@localhost/gmod
+$_&gt; sqitch config core.pg.target gmod
+</code></pre>
+
+<h4 id="deploy-database-schema">Deploy database schema</h4>
+<p>Install chado database schema in the default postgresql database. </p>
+<pre class="prettyprint well"><code>$_&gt; sqitch deploy 
+</code></pre>
+
+<h4 id="deploy-to-another-database">Deploy to another database</h4>
+<p>Add another target by specifying the database url. </p>
+<pre class="prettyprint well"><code class="shell">$_&gt; sqitch target add mymod db:pg://mychado:chado123@localhost/mymod
+$_&gt; sqitch deploy -t mymod
+</code></pre>
+
+<p>The same schema could be installed in multiple places by specifying the target
+configuration.</p>
+</div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        
+
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="../..//js/bootstrap-3.0.3.min.js"></script>
+        <script src="../..//js/prettify-1.0.min.js"></script>
+        <script src="../..//js/base.js"></script>
+        
+    </body>
+</html>
