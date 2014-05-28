@@ -10,8 +10,8 @@ described below. Do consult the scope of this project  before you go ahead.
 All commands are expected to be executed from a command line terminal interface.
 The following use cases are documented..
 
-- [Install chado schema](use_cases/install_schema_only.md).
-- [Install and manage chado schema](use_cases/install_schema_manage.md).
+- [Install chado schema](use_cases/install_schema_only.md)
+- [Install and manage chado schema](use_cases/install_schema_manage.md)
 
 ## Extra sauce
 It comes with two command line tools ```load``` and ```dump``` to manage
