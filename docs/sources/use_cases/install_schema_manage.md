@@ -8,7 +8,7 @@ work with software application layer, for example user management tables.
 #### Install git
 Preferably use the package manager of your OS.
 
-### Clone this repository
+#### Clone this repository
 ```
 $_> git clone https://github.com/dictyBase/Chado-Sqitch
 $_> cd Chado-sqitch

@@ -1,8 +1,7 @@
 site_name : Chado Sqitch Documentation
 docs_dir: sources
-site_url : /
 repo_url: https://github.com/dictyBase/Chado-Sqitch
 pages :
-    - ['index.md', 'About']
+    - ['index.md', 'Home']
     - ['use_cases/install_schema_only.md', 'Use Cases', 'Install chado schema']
     - ['use_cases/install_schema_manage.md', 'Use Cases', 'Install and manage chado schema']
