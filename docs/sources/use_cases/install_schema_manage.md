@@ -1,4 +1,6 @@
 ## Install chado schema and manage database changes
+Please consult the basic sqitch [reference](../sqitch.md) if neccessary.
+
 ### Circumstance
 Installation of chado schema for extending and customization. Also, might need
 to add other database tables, schemas that is unrelated to chado but needed to

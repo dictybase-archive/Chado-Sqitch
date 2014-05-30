@@ -10,6 +10,7 @@ named change could be deployed or reverted from the database.
 |deploy   change2   |  
 |         change3   |
 v
+```
 
 Deploy and revert are opposite of each other. The __change__ file contain sql
 commands that will be run on the database. The list and order of changes are

@@ -1,4 +1,6 @@
 ## Install chado schema only
+Please consult the basic sqitch [reference](../sqitch.md) if neccessary.
+
 ### Circumstance 
 Simple straight install of chado schema, no management or anything else.
 

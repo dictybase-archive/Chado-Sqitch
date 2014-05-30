@@ -5,3 +5,4 @@ pages :
     - ['index.md', 'Home']
     - ['use_cases/install_schema_only.md', 'Use Cases', 'Install chado schema']
     - ['use_cases/install_schema_manage.md', 'Use Cases', 'Install and manage chado schema']
+    - ['sqitch.md', 'Sqitch reference']
