@@ -1,4 +1,4 @@
-%syntax-version=1.0.0-b2
+%syntax-version=1.0.0
 %project=dictybase
 %uri=https://github.com/dictyBase/Chado-Sqitch
 
@@ -15,3 +15,5 @@ phenotype 2014-05-13T20:52:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu
 genetic 2014-05-13T20:52:22Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for genetic chado module
 stock [general cv contact organism pub sequence phenotype genetic] 2014-05-13T20:52:23Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # sql for stock chado module
 @dictychado-1.23 2014-05-13T20:53:21Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # SQL statements for latest dictychado
+
+jbrowse [@dictychado-1.23] 2016-06-20T18:56:42Z Docker image user <cybersiddhu@dbfdfc3a0c01> # Added tables for storing various jbrowse configuration files
