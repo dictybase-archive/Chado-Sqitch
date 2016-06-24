@@ -2,7 +2,7 @@
 
 BEGIN;
 
-SELECT pg_catalog.has_any_column_privilege('jbrowse_organism', 'dataset' 'select');
-SELECT pg_catalog.has_any_column_privilege('jbrowse_organism', 'dataset' 'insert');
+SELECT pg_catalog.has_column_privilege('jbrowse_organism', 'dataset', 'select');
+SELECT pg_catalog.has_column_privilege('jbrowse_organism', 'dataset', 'insert');
 
 ROLLBACK;
