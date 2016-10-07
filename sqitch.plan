@@ -24,3 +24,5 @@ jbrowse-alternation [jbrowse] 2016-06-22T18:15:38Z Docker image user <cybersiddh
 
 auth [@dictychado-1.23] 2016-06-24T12:07:06Z Docker image user <cybersiddhu@8bf21262cb96> # Authentication and authorization database tables
 @dictychado-1.23.3 2016-06-24T22:07:18Z Docker image user <cybersiddhu@8bf21262cb96> # release of dictychado-1.23.3
+
+auth-provider [@dictychado-1.23.3] 2016-10-06T21:46:37Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tables for storing information about third party authentication
