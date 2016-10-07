@@ -20,7 +20,7 @@ create table auth_user_provider (
     name text not null,
     email citext not null,
     auth_provider_id int not null,
-    primary key(auth_user_provider),
+    primary key(auth_user_provider_id),
     foreign key (auth_provider_id) references auth_provider(auth_provider_id) on delete cascade INITIALLY DEFERRED,
     created_at timestamp with time zone default now(),
     updated_at timestamp with time zone default now()

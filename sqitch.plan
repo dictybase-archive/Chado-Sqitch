@@ -26,3 +26,4 @@ auth [@dictychado-1.23] 2016-06-24T12:07:06Z Docker image user <cybersiddhu@8bf2
 @dictychado-1.23.3 2016-06-24T22:07:18Z Docker image user <cybersiddhu@8bf21262cb96> # release of dictychado-1.23.3
 
 auth-provider [@dictychado-1.23.3] 2016-10-06T21:46:37Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tables for storing information about third party authentication
+user-relation [auth cv] 2016-10-07T18:32:09Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Relationship between users, for example link between a lab PI and its members.
