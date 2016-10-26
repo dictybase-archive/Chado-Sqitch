@@ -29,3 +29,5 @@ auth-provider [@dictychado-1.23.3] 2016-10-06T21:46:37Z Siddhartha Basu <siddhar
 user-relation [auth cv] 2016-10-07T18:32:09Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Relationship between users, for example link between a lab PI and its members.
 stock-order [user-relation stock] 2016-10-07T20:21:44Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Changes for dicty stock center(dsc) orders
 @dictychado-1.23.4 2016-10-07T21:44:01Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tag dictychado-1.23.4
+
+auth-alteration [auth] 2016-10-26T21:45:35Z Docker image user <cybersiddhu@2a884fa449d9> # adding primary key to the auth_user_role table
