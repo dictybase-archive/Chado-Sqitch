@@ -30,4 +30,6 @@ user-relation [auth cv] 2016-10-07T18:32:09Z Siddhartha Basu <siddhartha-basu@no
 stock-order [user-relation stock] 2016-10-07T20:21:44Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Changes for dicty stock center(dsc) orders
 @dictychado-1.23.4 2016-10-07T21:44:01Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tag dictychado-1.23.4
 
-auth-alteration [auth] 2016-10-26T21:45:35Z Docker image user <cybersiddhu@2a884fa449d9> # adding primary key to the auth_user_role table
+auth-alteration [auth] 2016-10-26T21:45:35Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # adding primary key to the auth_user_role table
+stock-order-alteration [stock-order] 2016-10-26T22:00:19Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # adding additional columns in the stock_order table to capture more information
+@dictychado-1.23.5 2016-10-27T12:41:18Z Docker image user <cybersiddhu@beab4f579411> # Tag dictychado-1.23.5
