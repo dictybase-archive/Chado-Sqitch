@@ -42,3 +42,6 @@ user-info-alteration [auth] 2017-08-01T16:11:17Z Siddhartha Basu <siddhartha-bas
 
 stock-order-trigger [stock-order-alteration] 2017-08-07T18:06:36Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # adding trigger to validate purchase order
 @dictychado-1.23.8 2017-08-07T20:27:53Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tag dictychado-1.23.8
+
+stock-annotation [user-info-alteration stock] 2017-09-19T18:23:10Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # changes for storing strain annotations
+@dictychado-1.23.9 2017-09-19T19:20:27Z Siddhartha Basu <siddhartha-basu@northwestern.edu> # Tag dictychado-1.23.9
